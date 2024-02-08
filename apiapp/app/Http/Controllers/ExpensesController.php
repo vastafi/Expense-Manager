@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Models\Expenses;
@@ -42,7 +43,16 @@ class ExpensesController extends Controller
 
         return response()->json($post, Response::HTTP_CREATED); // Return the new post as JSON
     }
+    function getid($id)
+    {
+        $post = Expenses::find($id);
+        if (!$post) {
+            return response()->json(['message' => 'Expenses not found'], Response::HTTP_NOT_FOUND);
+        }
 
+        $post->get();
+        return response()->json($post, Response::HTTP_CREATED);
+    }
     public function destroy($ExpenseID)
     {
         $expense = Expenses::find($ExpenseID);

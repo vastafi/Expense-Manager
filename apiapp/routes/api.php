@@ -23,9 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/get/user', [UserController::class, 'index']);
+Route::get('/get/user/{id}', [UserController::class, 'getid']);
 Route::post('/post/user', [UserController::class, 'store']);
 Route::delete('/delete/user/{id}', [UserController::class, 'destroy']);
-Route::put('/user/{id}', [UserController::class, 'update']);
+Route::patch('/user/{id}', [UserController::class, 'update']);
 
 Route::get('/get/category', [ExpenseCategoriesController::class, 'index']);
 Route::get('/get/category/{id}', [ExpenseCategoriesController::class, 'getid']);
@@ -37,6 +38,7 @@ Route::middleware('auth:sanctum')->get('/expenses', function (Request $request) 
 });
 
 Route::get('/get/expenses', [ExpensesController::class, 'index']);
+Route::get('/get/expenses/{id}', [ExpensesController::class, 'getid']);
 Route::post('/post/expenses', [ExpensesController::class, 'store']);
 Route::delete('/delete/expenses/{id}', [ExpensesController::class, 'destroy']);
 
@@ -45,6 +47,7 @@ Route::middleware('auth:sanctum')->get('/budget', function (Request $request) {
 });
 
 Route::get('/get/budget', [MonthlyBudgetControler::class, 'index']);
+Route::get('/get/budget/{id}', [MonthlyBudgetControler::class, 'getid']);
 Route::post('/post/budget', [MonthlyBudgetControler::class, 'store']);
 Route::delete('/delete/budget/{id}', [MonthlyBudgetControler::class, 'destroy']);
 

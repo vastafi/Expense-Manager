@@ -36,7 +36,16 @@ class MonthlyBudgetControler extends Controller
 
         return response()->json($post, Response::HTTP_CREATED); // Return the new post as JSON
     }
+    function getid($id)
+    {
+        $post = MonthlyBudget::find($id);
+        if (!$post) {
+            return response()->json(['message' => 'Monthly Buget not found'], Response::HTTP_NOT_FOUND);
+        }
 
+        $post->get();
+        return response()->json($post, Response::HTTP_CREATED);
+    }
     //delete
     public function destroy($id)
     {

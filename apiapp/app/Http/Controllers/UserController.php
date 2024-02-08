@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Response; // Import the Response class
 use Illuminate\Http\Request;
 use App\Models\Users;
@@ -17,6 +18,7 @@ class UserController extends Controller{
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            'id' => 'required',
             'name'=> 'required',
             'email'=> 'required',
             'email_verified_at' => 'required',
@@ -26,6 +28,8 @@ class UserController extends Controller{
 
         // Create a new Post instance with the validated data
         $post = new Users([
+
+            'id'=> $validatedData['id'],
             'name'=> $validatedData['name'],
             'email'=> $validatedData['email'],
             'email_verified_at' => $validatedData['email_verified_at'],
@@ -37,6 +41,16 @@ class UserController extends Controller{
         $post->save(); // Save the new post to the database
 
         return response()->json($post, Response::HTTP_CREATED); // Return the new post as JSON
+    }
+    function getid($id)
+    {
+        $post = Users::find($id);
+        if (!$post) {
+            return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $post->get();
+        return response()->json($post, Response::HTTP_CREATED);
     }
 
     public function update(Request $request, $id)
