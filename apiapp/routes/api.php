@@ -26,7 +26,7 @@ Route::get('/get/user', [UserController::class, 'index']);
 Route::get('/get/user/{id}', [UserController::class, 'getid']);
 Route::post('/post/user', [UserController::class, 'store']);
 Route::delete('/delete/user/{id}', [UserController::class, 'destroy']);
-Route::patch('/user/{id}', [UserController::class, 'update']);
+Route::put('/user/{id}', [UserController::class, 'update']);
 
 Route::get('/get/category', [ExpenseCategoriesController::class, 'index']);
 Route::get('/get/category/{id}', [ExpenseCategoriesController::class, 'getid']);
