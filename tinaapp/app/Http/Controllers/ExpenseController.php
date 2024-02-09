@@ -6,6 +6,7 @@ use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use App\Models\Expense;
 use App\DataAcces\ExpenseAccessor;
+
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -17,13 +18,22 @@ class ExpenseController extends Controller {
     {
         $this->expenseAccessor = $expenseAccessor;
     }
-
+//    public function index()
+//    {
+//        $user_id = auth()->user()->id;
+//        $expenses = $this->expenseAccessor->getAllUserExpenses($user_id);
+//        $categories = ExpenseCategory::all();
+//        Log::info('Pagina de cheltuieli accesată.', ['user_id' => $user->id]);
+//        $rewards = auth()->user()->rewards;
+//
+//        return view('pages.home', compact('expenses', 'categories', 'rewards'));
+//    }
     public function index()
     {
         $user_id = auth()->user()->id;
         $expenses = $this->expenseAccessor->getAllUserExpenses($user_id);
         $categories = ExpenseCategory::all();
-        Log::info('Pagina de cheltuieli accesată.', ['user_id' => $user->id]);
+        // Presupunând că rewards este gestionat separat și nu este nevoie să fie modificat aici
         $rewards = auth()->user()->rewards;
 
         return view('pages.home', compact('expenses', 'categories', 'rewards'));
