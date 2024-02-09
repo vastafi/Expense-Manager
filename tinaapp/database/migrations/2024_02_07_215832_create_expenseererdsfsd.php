@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('expense_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('Name');
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -46,7 +47,7 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('expenses');
-        Schema::dropIfExists('expense_categories');
         Schema::dropIfExists('monthly_budgets');
+        Schema::dropIfExists('expense_categories');
     }
 };

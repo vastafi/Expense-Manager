@@ -13,18 +13,9 @@
                             @method('PUT')
 
                             <div class="form-group">
-                                <label for="user_id">Utilizator</label>
-                                <select name="user_id" id="user_id" class="form-control">
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}" {{ $user->id == $expense->user_id ? 'selected' : '' }}>{{ $user->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="form-group">
                                 <label for="category_id">Categoria</label>
                                 <select name="category_id" id="category_id" class="form-control">
-                                    @foreach(\App\Models\ExpenseCategory::all() as $category)
+                                    @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ $category->id == $expense->category_id ? 'selected' : '' }}>{{ $category->Name }}</option>
                                     @endforeach
                                 </select>
@@ -32,17 +23,26 @@
 
                             <div class="form-group">
                                 <label for="Amount">Suma</label>
-                                <input type="text" name="Amount" id="Amount" class="form-control" value="{{ $expense->Amount }}">
+                                <input type="text" name="Amount" id="Amount" class="form-control @error('Amount') is-invalid @endError" value="{{ old('Amount', $expense->Amount) }}">
+                                @error('Amount')
+                                <span class="text-danger fw-bold">{{$message}}</span>
+                                @endError
                             </div>
 
                             <div class="form-group">
                                 <label for="Date">Data</label>
-                                <input type="date" name="Date" id="Date" class="form-control" value="{{ $expense->Date }}">
+                                <input type="date" name="Date" id="Date" class="form-control @error('Date') is-invalid @endError" value="{{ old('Date', $expense->Date) }}">
+                                @error('Date')
+                                <span class="text-danger fw-bold">{{$message}}</span>
+                                @endError
                             </div>
 
                             <div class="form-group">
                                 <label for="Description">Descrierea</label>
-                                <textarea name="Description" id="Description" class="form-control" rows="4">{{ $expense->Description }}</textarea>
+                                <textarea name="Description" id="Description" class="form-control @error('Description') is-invalid @endError" rows="4">{{ old('Description', $expense->Description) }}</textarea>
+                                @error('Description')
+                                <span class="text-danger fw-bold">{{$message}}</span>
+                                @endError
                             </div>
 
                             <button type="submit" class="btn btn-primary">Actualizează în lista</button>

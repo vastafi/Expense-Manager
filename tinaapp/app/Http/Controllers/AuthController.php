@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
-    {
-        return view('pages.login');
-    }
 
     public function login(Request $request)
     {
@@ -23,11 +19,6 @@ class AuthController extends Controller
         } else {
             return back()->withErrors(['email' => 'Autentificarea a eșuat.']);
         }
-    }
-
-    public function showRegistrationForm()
-    {
-        return view('pages.register');
     }
 
     public function register(Request $request)

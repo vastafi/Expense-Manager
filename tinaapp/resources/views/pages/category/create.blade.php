@@ -37,6 +37,14 @@
                                     <div class="card-body">
                                         {{ $category->Name }}
                                         <div class="mt-2">
+                                            <!-- Formular pentru ștergere soft -->
+                                            <form method="POST" action="{{ route('pages.category.destroy', $category->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Esti sigur ca vrei sa stergi aceasta categorie (stergerea va fi soft)?')">Ștergere</button>
+                                            </form>
+                                            <br>
+                                            <!-- End Formular pentru ștergere soft -->
                                             <a href="{{ route('pages.category.edit', $category->id) }}" class="btn btn-sm btn-primary">Editare</a>
                                         </div>
                                     </div>
@@ -47,6 +55,5 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection

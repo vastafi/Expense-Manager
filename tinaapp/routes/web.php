@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\MonthlyBudgetController;
+use App\Http\Controllers\RewardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,18 +19,17 @@ use App\Http\Controllers\MonthlyBudgetController;
 |
 */
 
-Route::group(['namespace' => 'App\Http\Controllers'], function()
-{
-    Route::get('/', 'ExpenseController@index')->name('pages.index');
-    Route::get('/about', 'PagesController@about')->name('pages.about');
-    Route::get('/login', 'PagesController@login')->name('pages.login');
-    Route::get('/register', 'PagesController@register')->name('pages.register');
-    Route::get('/login', 'AuthController@showLoginForm')->name('login');
-    Route::post('/login', 'AuthController@login');
-    Route::get('/register', 'AuthController@showRegistrationForm')->name('register');
-    Route::post('/register', 'AuthController@register');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::view('/login', 'pages.login')->name('login');
+Route::view('/register', 'pages.register')->name('register');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
+Route::group(['middleware' => ['auth']], function()
+{
+    Route::get('/', [ExpenseController::class, 'index'])->name('pages.index');
+    Route::get('/about', [PagesController::class, 'about'])->name('pages.about');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/user/{userId}', [RewardController::class, 'showPoints'])->name('user.points');
     // test
     Route::get('/create', [ExpenseController::class, 'create'])->name('pages.expense.create');
     Route::post('/create', [ExpenseController::class, 'store'])->name('pages.expense.store');
@@ -39,9 +39,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
 
     Route::get('/add', [ExpenseCategoryController::class, 'create'])->name('pages.category.create');
     Route::post('/add', [ExpenseCategoryController::class, 'store'])->name('pages.category.store');
-    Route::get('/categories/{category}/edit', 'ExpenseCategoryController@edit')->name('pages.category.edit');
-    Route::put('/categories/{category}', 'ExpenseCategoryController@update')->name('pages.category.update');
-    Route::delete('/categories/{category}', 'ExpenseCategoryController@destroy')->name('pages.category.destroy');
+    Route::get('/categories/{category}/edit', [ExpenseCategoryController::class, 'edit'])->name('pages.category.edit');
+    Route::put('/categories/{category}', [ExpenseCategoryController::class, 'update'])->name('pages.category.update');
+    Route::delete('/categories/{category}', [ExpenseCategoryController::class, 'destroy'])->name('pages.category.destroy');
 
     Route::get('/budget', [MonthlyBudgetController::class, 'index'])->name('pages.monthly.index');
     Route::get('/set', [MonthlyBudgetController::class, 'create'])->name('pages.monthly.create');

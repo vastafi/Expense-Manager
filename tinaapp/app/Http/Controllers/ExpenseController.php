@@ -7,83 +7,77 @@ use Illuminate\Http\Request;
 use App\Models\Expense;
 use App\Models\User;
 use App\Models\MonthlyBudget;
+use Symfony\Component\HttpFoundation\Response;
 
-class ExpenseController extends Controller
-{
-    public function index()
-    {
-        $expenses = Expense::all();
+class ExpenseController extends Controller {
+
+    public function index() {
+        $user = auth()->user();
+        $expenses = $user->expenses;
+        $rewards = $user->rewards;
         $categories = ExpenseCategory::all();
-        return view('pages.home', compact('expenses', 'categories'));
+
+        return view('pages.home', compact('expenses', 'categories', 'rewards'));
     }
 
-    public function create()
-    {
-        $users = User::all();
+    public function create() {
         $categories = ExpenseCategory::all();
-        return view('pages.expense.create', compact('users'));
+
+        return view('pages.expense.create', compact('categories'));
     }
 
-        public function store(Request $request)
-    {
+    public function store(Request $request) {
         // Validează datele din request
         $validatedData = $request->validate([
-            'user_id' => 'required',
-            'category_id' => 'required', // Asigurați-vă că category_id este inclus aici
-            'Amount' => 'required',
+            'category_id' => 'required',
+            'Amount' => 'required|numeric',
             'Date' => 'required',
             'Description' => 'required',
         ]);
 
-        // Salvăm noutatea în baza de date
-        $expense = Expense::create($validatedData);
+        $validatedData = array_merge(['user_id' => auth()->user()->id], $validatedData);
 
-        // Redirectează către pagina cu lista de cheltuieli
-        return redirect()->route('pages.expense.create');
+        Expense::create($validatedData);
+
+        return redirect()->route('pages.expense.create')->with('success', 'Cheltuiala a fost adaugata!');
     }
 
-    public function edit(Expense $expense)
-    {
-        $users = User::all();
+    public function edit(Expense $expense) {
+
+        abort_if($expense->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
+
         $categories = ExpenseCategory::all();
-        // Afiseaza formularul pentru editarea unei cheltuieli existente
-        return view('pages.expense.edit', compact('expense', 'users', 'categories'));
+
+        return view('pages.expense.edit', compact('expense', 'categories'));
     }
 
-    public function update(Request $request, Expense $expense)
-    {
+    public function update(Request $request, Expense $expense) {
         // Valideaza datele din request
         $request->validate([
-            'user_id' => 'required',
             'category_id' => 'required',
-            'Amount' => 'required',
+            'Amount' => 'required|numeric',
             'Date' => 'required',
             'Description' => 'required',
         ]);
 
-        // Actualizeaza cheltuiala existenta in baza de date
         $expense->update([
-            'user_id' => $request->user_id,
             'category_id' => $request->category_id,
             'Amount' => $request->Amount,
             'Date' => $request->Date,
             'Description' => $request->Description,
         ]);
 
-        // Redirecteaza catre pagina cu lista de cheltuieli
-        return redirect()->route('pages.expense.create');
+        return redirect()->route('pages.expense.create')->with('success', 'Cheltuiala a fost modificata!');
     }
 
-    public function destroy(Expense $expense)
-    {
-        // Șterge cheltuiala din baza de date
+    public function destroy(Expense $expense) {
+        abort_if($expense->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
+
         $expense->delete();
 
-        // Preia cheltuielile și categoriile pentru a le afișa din nou pe aceeași pagină
-        $expenses = Expense::all();
-        $categories = ExpenseCategory::all();
+        session()->flash('success', 'Cheltuiala a fost stearsa!');
 
-        // Returnează aceeași pagină cu datele actualizate și mesajul de succes
-        return view('pages.home', compact('expenses', 'categories'))->with('success', 'Cheltuiala a fost ștearsă cu succes!');
+        return redirect()->route('pages.index');
     }
+
 }

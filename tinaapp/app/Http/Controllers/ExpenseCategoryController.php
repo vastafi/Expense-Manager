@@ -48,8 +48,15 @@ class ExpenseCategoryController extends Controller
     }
     public function destroy(ExpenseCategory $category)
     {
+        // Verifică dacă există înregistrări în tabela 'expenses' care fac referire la categoria $category
+        if ($category->expenses->count() > 0) {
+            session()->flash('error', 'Nu poți șterge această categorie deoarece are înregistrări asociate în tabela "expenses".');
+            return redirect()->back();
+        }
+
         $category->delete();
 
-        return redirect()->route('pages.category.destroy', ['category' => $category])->with('success', 'Categoria a fost actualizată.');
+        session()->flash('success', 'Categoria a fost ștearsă cu succes.');
+        return redirect()->route('pages.category.create');
     }
 }
