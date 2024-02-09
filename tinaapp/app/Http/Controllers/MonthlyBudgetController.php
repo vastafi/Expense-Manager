@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MonthlyBudget;
+use App\DataAcces\MonthlyBudgetAccessor;
 use App\Models\User;
 use App\Models\ExpenseCategory;
 use App\Models\Expense;
@@ -14,6 +15,12 @@ use Illuminate\Support\Facades\Log;
 class MonthlyBudgetController extends Controller {
 
     // Metoda pentru afișarea tuturor limitelor bugetare lunare
+    protected $budgetAccessor;
+
+    public function __construct(MonthlyBudgetAccessor $budgetAccessor)
+    {
+        $this->budgetAccessor = $budgetAccessor;
+    }
     public function index() {
         $user_id = auth()->user()->id;
 
@@ -41,6 +48,7 @@ class MonthlyBudgetController extends Controller {
 
         return view('pages.monthly.index', compact('user', 'monthlyExpenses'));
     }
+
 
     // Metoda pentru afișarea formularului de creare a unei noi limite bugetare lunare
     public function create() {

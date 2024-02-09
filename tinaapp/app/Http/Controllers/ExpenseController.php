@@ -5,24 +5,40 @@ namespace App\Http\Controllers;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use App\Models\Expense;
-use App\Models\User;
-use App\Models\MonthlyBudget;
+use App\DataAcces\ExpenseAccessor;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
 
 
 class ExpenseController extends Controller {
+    protected $expenseAccessor;
 
-    public function index() {
-        $user = auth()->user();
-        $expenses = $user->expenses;
-        $rewards = $user->rewards;
+    public function __construct(ExpenseAccessor $expenseAccessor)
+    {
+        $this->expenseAccessor = $expenseAccessor;
+    }
+
+    public function index()
+    {
+        $user_id = auth()->user()->id;
+        $expenses = $this->expenseAccessor->getAllUserExpenses($user_id);
         $categories = ExpenseCategory::all();
-
         Log::info('Pagina de cheltuieli accesată.', ['user_id' => $user->id]);
+        $rewards = auth()->user()->rewards;
 
         return view('pages.home', compact('expenses', 'categories', 'rewards'));
     }
+
+//    public function index() {
+//        $user = auth()->user();
+//        $expenses = $user->expenses;
+//        $rewards = $user->rewards;
+//        $categories = ExpenseCategory::all();
+//
+//        Log::info('Pagina de cheltuieli accesată.', ['user_id' => $user->id]);
+//
+//        return view('pages.home', compact('expenses', 'categories', 'rewards'));
+//    }
 
     public function create() {
         $categories = ExpenseCategory::all();
