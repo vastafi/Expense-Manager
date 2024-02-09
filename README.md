@@ -30,8 +30,8 @@ Fiecare înregistrare în Expenses este legată de un singur User, dar un User p
 **SavingGoal** - utilizează date din Expenses și MonthlyBudget pentru a oferi utilizatorilor un instrument de stabilire și monitorizare a obiectivelor de economii pe termen lung, promovând astfel responsabilitatea financiară și planificarea.
 
 **Notifications** - sistem de comunicare proactivă care alertează utilizatorii despre evenimente relevante, cum ar fi apropierea de limitele bugetului sau atingerea obiectivelor de economii. Această entitate leagă logic toate celelalte componente, asigurându-se că utilizatorul este informat și actualizat.
-![](/Users/astafivalentina/PhpstormProjects/ExpenseManager/img1.png)
 
+![img1.png](img1.png)
 **Implementare**
 
 Nivel servicii (sau Business layer)
@@ -154,8 +154,11 @@ Acest exemplu folosește middleware-ul auth:sanctum pentru a asigura că numai u
 **Exemple de utilizare a rutelor API:**
 
 GET: http://127.0.0.1:8001/api/get/category
+
 GET by ID: http://127.0.0.1:8000/api/get/category/1
+
 POST: http://127.0.0.1:8000/api/post/category
+
 Pentru efectuarea acestei metode este ca corpul metodei să conțină datele necesare în format JSON. De exemplu
    
      {
@@ -164,7 +167,9 @@ Pentru efectuarea acestei metode este ca corpul metodei să conțină datele nec
     }
 
 La fel și pentru PUT (datele complete a întregii entități) și PATCH (datele parțiale a unei entități).
+
 PUT/ PATCH: http://127.0.0.1:8000/api/delete/category/15
+
 DELETE: http://127.0.0.1:8000/api/get/category/1
 
 
@@ -188,7 +193,7 @@ Aceste instrucțiuni vă vor ajută să creati o copie a proiectului în funcți
 Clonează depozitul git de pe computer
 $ git clone https://github.com/vastafi/Expense-Manager.git
 (Vezi imaginea de mai jos, cum poți obține linkul)
-![](/Users/astafivalentina/PhpstormProjects/ExpenseManager/img2.png)
+![img2.png](img2.png)
 
 De asemenea, puteți descărca întregul depozit ca fișier zip și despachetați pe computer dacă nu aveți git.
 Configurarea Bazei de Date, cu ajutorul la XAMPP și phpMyAdmin, ne conectăm cu credentialele din fișierul env.file.
