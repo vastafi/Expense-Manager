@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log; //  pentru a utiliza Log
+
 
 class AuthController extends Controller
 {
@@ -15,8 +17,10 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+            Log::info('Autentificare reușită.', ['email' => $request->input('email')]);
             return redirect()->intended('/');
         } else {
+            Log::warning('Eșec la autentificare.', ['email' => $request->input('email')]);
             return back()->withErrors(['email' => 'Autentificarea a eșuat.']);
         }
     }
@@ -41,6 +45,8 @@ class AuthController extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->save();
 
+        Log::info('Utilizator nou înregistrat și autentificat.', ['email' => $request->input('email')]);
+
         Auth::login($user);
 
         return redirect('/');
@@ -48,6 +54,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        Log::info('Utilizator deconectat.', ['user_id' => Auth::id()]);
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

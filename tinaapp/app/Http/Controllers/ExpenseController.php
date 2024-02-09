@@ -8,6 +8,8 @@ use App\Models\Expense;
 use App\Models\User;
 use App\Models\MonthlyBudget;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
+
 
 class ExpenseController extends Controller {
 
@@ -17,11 +19,15 @@ class ExpenseController extends Controller {
         $rewards = $user->rewards;
         $categories = ExpenseCategory::all();
 
+        Log::info('Pagina de cheltuieli accesată.', ['user_id' => $user->id]);
+
         return view('pages.home', compact('expenses', 'categories', 'rewards'));
     }
 
     public function create() {
         $categories = ExpenseCategory::all();
+
+        Log::info('Pagina de creare cheltuială accesată.', ['user_id' => auth()->user()->id]);
 
         return view('pages.expense.create', compact('categories'));
     }
@@ -39,6 +45,8 @@ class ExpenseController extends Controller {
 
         Expense::create($validatedData);
 
+        Log::info('Cheltuială nouă adăugată.', ['user_id' => auth()->user()->id, 'amount' => $validatedData['Amount']]);
+
         return redirect()->route('pages.expense.create')->with('success', 'Cheltuiala a fost adaugata!');
     }
 
@@ -47,6 +55,8 @@ class ExpenseController extends Controller {
         abort_if($expense->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
 
         $categories = ExpenseCategory::all();
+
+        Log::info('Pagina de editare cheltuială accesată.', ['user_id' => auth()->user()->id, 'expense_id' => $expense->id]);
 
         return view('pages.expense.edit', compact('expense', 'categories'));
     }
@@ -67,6 +77,8 @@ class ExpenseController extends Controller {
             'Description' => $request->Description,
         ]);
 
+        Log::info('Cheltuială actualizată.', ['user_id' => auth()->user()->id, 'expense_id' => $expense->id]);
+
         return redirect()->route('pages.expense.create')->with('success', 'Cheltuiala a fost modificata!');
     }
 
@@ -74,6 +86,8 @@ class ExpenseController extends Controller {
         abort_if($expense->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
 
         $expense->delete();
+
+        Log::info('Cheltuială ștearsă.', ['user_id' => auth()->user()->id, 'expense_id' => $expense->id]);
 
         session()->flash('success', 'Cheltuiala a fost stearsa!');
 

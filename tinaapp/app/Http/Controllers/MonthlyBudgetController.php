@@ -9,12 +9,16 @@ use App\Models\ExpenseCategory;
 use App\Models\Expense;
 use Illuminate\Support\Carbon;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class MonthlyBudgetController extends Controller {
 
     // Metoda pentru afișarea tuturor limitelor bugetare lunare
     public function index() {
         $user_id = auth()->user()->id;
+
+        Log::info('Afișarea bugetelor lunare', ['user_id' => $user_id]);
+
         $today = Carbon::now();
         $start = $today->startOfMonth()->format('Y-m-d');
         $end = $today->endOfMonth()->format('Y-m-d');
@@ -40,6 +44,9 @@ class MonthlyBudgetController extends Controller {
 
     // Metoda pentru afișarea formularului de creare a unei noi limite bugetare lunare
     public function create() {
+
+       Log::info('Accesat pagina de creare a bugetului lunar', ['user_id' => auth()->user()->id]);
+
         $categories = ExpenseCategory::all();
 
         return view('pages.monthly.create', compact(
@@ -48,6 +55,9 @@ class MonthlyBudgetController extends Controller {
 
     // Metoda pentru salvarea noii limite bugetare lunare în baza de date
     public function store(Request $request) {
+
+        Log::info('Încercare de salvare a unui nou buget lunar', ['user_id' => auth()->user()->id]);
+
         $request->validate([
             'category_id' => 'required',
             'Amount' => 'required|numeric',
@@ -74,6 +84,9 @@ class MonthlyBudgetController extends Controller {
 
     // Metoda pentru afișarea unei limite bugetare lunare specifice pentru editare
     public function edit(MonthlyBudget $monthlyBudget) {
+
+        Log::info('Accesat pagina de editare buget lunar', ['monthlyBudget_id' => $monthlyBudget->id, 'user_id' => auth()->user()->id]);
+
         abort_if($monthlyBudget->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
 
         return view('monthly_budgets.edit', compact('monthlyBudget'));
@@ -81,6 +94,9 @@ class MonthlyBudgetController extends Controller {
 
     // Metoda pentru actualizarea limitei bugetare lunare în baza de date
     public function update(Request $request, MonthlyBudget $monthlyBudget) {
+
+        Log::info('Actualizare buget lunar', ['monthlyBudget_id' => $monthlyBudget->id, 'user_id' => auth()->user()->id]);
+
         abort_if($monthlyBudget->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
 
         $request->validate([
@@ -95,6 +111,9 @@ class MonthlyBudgetController extends Controller {
 
     // Metoda pentru ștergerea unei limite bugetare lunare
     public function destroy(MonthlyBudget $monthlyBudget) {
+
+        Log::info('Ștergere buget lunar', ['monthlyBudget_id' => $monthlyBudget->id, 'user_id' => auth()->user()->id]);
+
         abort_if($monthlyBudget->user_id !== auth()->user()->id, Response::HTTP_UNAUTHORIZED);
 
         $monthlyBudget->delete();
